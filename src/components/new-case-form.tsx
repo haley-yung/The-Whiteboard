@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SITES } from "@/lib/types";
@@ -8,19 +8,30 @@ import type { Site } from "@/lib/types";
 import { createCase } from "@/lib/actions";
 import { Button, Icon, Pill } from "./primitives";
 import { toISODate } from "@/lib/urgency";
+import { useUser } from "@/lib/user-context";
 
 export function NewCaseForm() {
   const router = useRouter();
+  const { users } = useUser();
   const [pending, startTransition] = useTransition();
   const [identifier, setIdentifier] = useState("");
   const [initials, setInitials] = useState("");
   const [site, setSite] = useState<Site | null>(null);
+  const [moId, setMoId] = useState<string | null>(null);
+  const [showAllMos, setShowAllMos] = useState(false);
 
   const defaultTarget = toISODate(addDays(new Date(), 5));
   const defaultTreatment = toISODate(addDays(new Date(), 12));
   const [targetDate, setTargetDate] = useState(defaultTarget);
   const [treatmentDate, setTreatmentDate] = useState(defaultTreatment);
   const [error, setError] = useState<string | null>(null);
+
+  const mos = useMemo(() => users.filter((u) => u.role === "MO"), [users]);
+  const siteMos = useMemo(
+    () => (site ? mos.filter((m) => m.sites.includes(site)) : []),
+    [mos, site],
+  );
+  const mosToShow = showAllMos || !site ? mos : siteMos;
 
   const idValid = /^\d{8}$/.test(identifier);
   const canSubmit = idValid && initials.trim().length > 0 && site && targetDate && treatmentDate;
@@ -36,6 +47,7 @@ export function NewCaseForm() {
           treatment_site: site,
           target_date: targetDate,
           treatment_date: treatmentDate,
+          assigned_mo_id: moId,
         });
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
@@ -83,10 +95,56 @@ export function NewCaseForm() {
         <Field label="Treatment site">
           <div className="flex flex-wrap gap-1.5">
             {SITES.map((s) => (
-              <Pill key={s} active={site === s} onClick={() => setSite(s)}>
+              <Pill
+                key={s}
+                active={site === s}
+                onClick={() => {
+                  setSite(s);
+                  // Drop MO selection if it's not valid for the new site
+                  if (moId) {
+                    const picked = mos.find((m) => m.id === moId);
+                    if (picked && !picked.sites.includes(s)) setMoId(null);
+                  }
+                  setShowAllMos(false);
+                }}
+              >
                 {s}
               </Pill>
             ))}
+          </div>
+        </Field>
+
+        <Field
+          label="Assign MO"
+          hint={
+            site
+              ? showAllMos
+                ? "Showing all MOs"
+                : `Showing MOs linked to ${site}`
+              : "Pick a site first to see suggested MOs"
+          }
+        >
+          <div className="flex flex-wrap gap-1.5">
+            <Pill active={moId === null} onClick={() => setMoId(null)}>
+              — unassigned —
+            </Pill>
+            {mosToShow.map((m) => (
+              <Pill
+                key={m.id}
+                active={moId === m.id}
+                onClick={() => setMoId(m.id)}
+              >
+                {m.name}
+              </Pill>
+            ))}
+            {site && siteMos.length < mos.length && (
+              <Pill
+                variant="ghost"
+                onClick={() => setShowAllMos((v) => !v)}
+              >
+                {showAllMos ? "Show suggested only" : "Show all MOs…"}
+              </Pill>
+            )}
           </div>
         </Field>
 
@@ -110,7 +168,9 @@ export function NewCaseForm() {
         </div>
 
         <div className="mt-5 text-[11px] italic text-[color:var(--color-faint)]">
-          → Creates in Pending Assign (unassigned). Assign an MO from the board.
+          {moId
+            ? "→ Creates in PTV, assigned."
+            : "→ Creates in Pending Assign (unassigned). Assign an MO from the board later."}
         </div>
 
         {error && (

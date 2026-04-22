@@ -21,13 +21,16 @@ function assertPhase(p: unknown): Phase {
   return p as Phase;
 }
 
-// Create case (from New Case form) — always starts in Pending Assign, unassigned
+// Create case (from New Case form). If an MO is picked at creation, the case
+// goes straight into PTV; otherwise it sits in Pending Assign until the RT
+// assigns one from the board.
 export async function createCase(form: {
   patient_identifier: string;
   patient_initials: string;
   treatment_site: string;
   target_date: string;
   treatment_date: string;
+  assigned_mo_id: string | null;
 }) {
   const sb = await createServerSupabase();
   const id = form.patient_identifier.trim();
@@ -41,8 +44,8 @@ export async function createCase(form: {
     treatment_site: assertSite(form.treatment_site),
     target_date: form.target_date,
     treatment_date: form.treatment_date,
-    current_phase: "Pending Assign",
-    assigned_mo_id: null,
+    current_phase: form.assigned_mo_id ? "PTV" : "Pending Assign",
+    assigned_mo_id: form.assigned_mo_id,
   });
   if (error) throw error;
   revalidatePath("/");
