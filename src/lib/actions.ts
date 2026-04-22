@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createServerSupabase } from "./supabase";
+import { createServerSupabase } from "./supabase-server";
 import type { Phase, Site } from "./types";
 
 function assertSite(s: unknown): Site {

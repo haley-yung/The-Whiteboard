@@ -1,5 +1,5 @@
 import "server-only";
-import { createRscSupabase } from "./supabase";
+import { createRscSupabase } from "./supabase-server";
 import type { Case, Phase, Rejection, Role, Site, User } from "./types";
 
 type UserRow = { id: string; name: string; role: Role };
