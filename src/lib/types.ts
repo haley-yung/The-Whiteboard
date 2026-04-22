@@ -12,10 +12,10 @@ export const SITES = [
 
 export type Site = (typeof SITES)[number];
 
-export const PHASES = ["OAR", "PTV", "Pending Check", "Re-PTV", "Archive"] as const;
+export const PHASES = ["Pending Assign", "PTV", "Pending Check", "Re-PTV", "Archive"] as const;
 export type Phase = (typeof PHASES)[number];
 
-export const BOARD_PHASES: Phase[] = ["OAR", "PTV", "Pending Check", "Re-PTV"];
+export const BOARD_PHASES: Phase[] = ["Pending Assign", "PTV", "Pending Check", "Re-PTV"];
 
 export const REJECTION_REASONS = [
   "Margin too tight",

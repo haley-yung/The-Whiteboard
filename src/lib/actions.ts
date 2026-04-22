@@ -14,14 +14,14 @@ function assertSite(s: unknown): Site {
 }
 
 function assertPhase(p: unknown): Phase {
-  const allowed: Phase[] = ["OAR", "PTV", "Pending Check", "Re-PTV", "Archive"];
+  const allowed: Phase[] = ["Pending Assign", "PTV", "Pending Check", "Re-PTV", "Archive"];
   if (typeof p !== "string" || !allowed.includes(p as Phase)) {
     throw new Error(`Invalid phase: ${p}`);
   }
   return p as Phase;
 }
 
-// Create case (from New Case form) — always starts in OAR, unassigned
+// Create case (from New Case form) — always starts in Pending Assign, unassigned
 export async function createCase(form: {
   patient_identifier: string;
   patient_initials: string;
@@ -41,7 +41,7 @@ export async function createCase(form: {
     treatment_site: assertSite(form.treatment_site),
     target_date: form.target_date,
     treatment_date: form.treatment_date,
-    current_phase: "OAR",
+    current_phase: "Pending Assign",
     assigned_mo_id: null,
   });
   if (error) throw error;
@@ -49,7 +49,7 @@ export async function createCase(form: {
   redirect("/");
 }
 
-// RT: assign MO and move OAR → PTV
+// RT: assign MO and move Pending Assign → PTV
 export async function assignMoAndAdvance(caseId: string, moId: string) {
   const sb = await createServerSupabase();
   const { error } = await sb

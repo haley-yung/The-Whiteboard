@@ -110,7 +110,7 @@ export function NewCaseForm() {
         </div>
 
         <div className="mt-5 text-[11px] italic text-[color:var(--color-faint)]">
-          → Creates in OAR phase (unassigned). Assign an MO later from the board.
+          → Creates in Pending Assign (unassigned). Assign an MO from the board.
         </div>
 
         {error && (

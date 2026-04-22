@@ -147,7 +147,7 @@ function MenuView({
   const actions: React.ReactNode[] = [];
 
   if (role === "RT") {
-    if (c.current_phase === "OAR") {
+    if (c.current_phase === "Pending Assign") {
       actions.push(
         <Button key="assign" variant="primary" onClick={onPickAssign}>
           Assign MO & move to PTV

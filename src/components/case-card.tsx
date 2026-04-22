@@ -19,7 +19,10 @@ export function CaseCard({
 }) {
   const mo = c.assigned_mo_id ? users.get(c.assigned_mo_id) : null;
   const moName = mo ? stripParens(mo.name) : "— unassigned —";
-  const days = daysClient(c.target_date);
+  const showTreatment = c.current_phase === "Pending Check";
+  const primaryDate = showTreatment ? c.treatment_date : c.target_date;
+  const primaryLabel = showTreatment ? "Treatment" : "Target";
+  const days = daysClient(primaryDate);
   const highlight = days < 0 ? "red" : null;
 
   return (
@@ -35,7 +38,7 @@ export function CaseCard({
     >
       <div className="flex items-start gap-2.5">
         <div className="pt-0.5">
-          <UrgencyBadge targetDate={c.target_date} />
+          <UrgencyBadge targetDate={primaryDate} />
         </div>
         <div className="min-w-0 flex-1">
           <div className="truncate font-serif text-[16px] font-semibold tracking-tight">
@@ -46,8 +49,13 @@ export function CaseCard({
           </div>
         </div>
         <div className="text-right">
-          <div className="text-[10px] text-[color:var(--color-faint)]">Target</div>
-          <div className="text-[13px] font-semibold">{formatDateShort(c.target_date)}</div>
+          <div className="text-[10px] text-[color:var(--color-faint)]">{primaryLabel}</div>
+          <div className="text-[13px] font-semibold">{formatDateShort(primaryDate)}</div>
+          {c.current_phase === "PTV" && (
+            <div className="mt-0.5 text-[10px] text-[color:var(--color-faint)]">
+              Tx {formatDateShort(c.treatment_date)}
+            </div>
+          )}
         </div>
       </div>
     </Card>

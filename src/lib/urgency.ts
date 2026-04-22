@@ -1,4 +1,4 @@
-export type UrgencyTier = "overdue" | "amber" | "yellow" | "neutral";
+export type UrgencyTier = "overdue" | "soon" | "ok";
 
 export function daysUntil(dateStr: string, today = new Date()): number {
   const target = new Date(dateStr + "T00:00:00");
@@ -9,20 +9,17 @@ export function daysUntil(dateStr: string, today = new Date()): number {
 
 export function urgencyTier(days: number): UrgencyTier {
   if (days < 0) return "overdue";
-  if (days <= 2) return "amber";
-  if (days <= 7) return "yellow";
-  return "neutral";
+  if (days <= 1) return "soon";
+  return "ok";
 }
 
 export function urgencyColors(tier: UrgencyTier) {
   switch (tier) {
     case "overdue":
       return { fg: "var(--color-red)", bg: "var(--color-red-bg)" };
-    case "amber":
-      return { fg: "var(--color-amber)", bg: "var(--color-amber-bg)" };
-    case "yellow":
+    case "soon":
       return { fg: "#9a7a16", bg: "#f4e9c2" };
-    case "neutral":
+    case "ok":
       return { fg: "var(--color-green)", bg: "var(--color-green-bg)" };
   }
 }

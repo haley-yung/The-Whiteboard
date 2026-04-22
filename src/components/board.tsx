@@ -12,7 +12,7 @@ import { CaseActionSheet } from "./case-action-sheet";
 import { RejectionHistorySheet } from "./rejection-history";
 
 const phaseLabel: Record<Phase, string> = {
-  OAR: "OAR",
+  "Pending Assign": "Pending Assign",
   PTV: "In PTV",
   "Pending Check": "Pending Check",
   "Re-PTV": "Rework",
@@ -48,18 +48,24 @@ export function Board({ cases }: { cases: Case[] }) {
     return roleScoped.filter((c) => (selectedSites as Site[]).includes(c.treatment_site));
   }, [roleScoped, selectedSites]);
 
-  // Group by phase (already sorted asc by target_date from data layer)
+  // Group by phase. RT sees Rework on top, then Pending Assign, then PTV, then Pending Check.
   const phases = useMemo(() => {
     const visiblePhases: Phase[] =
-      currentUser.role === "MO" ? ["PTV", "Pending Check", "Re-PTV"] : BOARD_PHASES;
+      currentUser.role === "MO"
+        ? ["Re-PTV", "PTV", "Pending Check"]
+        : currentUser.role === "RT"
+          ? ["Re-PTV", "Pending Assign", "PTV", "Pending Check"]
+          : BOARD_PHASES;
     const byPhase = new Map<Phase, Case[]>(visiblePhases.map((p) => [p, []]));
     for (const c of siteFiltered) {
       const list = byPhase.get(c.current_phase);
       if (list) list.push(c);
     }
-    // Sort: overdue first within each phase (target asc already handles order)
-    for (const list of byPhase.values()) {
-      list.sort((a, b) => a.target_date.localeCompare(b.target_date));
+    // Sort: Pending Check by treatment_date, others by target_date. Overdue floats first.
+    for (const [phase, list] of byPhase.entries()) {
+      const key: "target_date" | "treatment_date" =
+        phase === "Pending Check" ? "treatment_date" : "target_date";
+      list.sort((a, b) => a[key].localeCompare(b[key]));
     }
     return visiblePhases.map((p) => ({ phase: p, list: byPhase.get(p) ?? [] }));
   }, [siteFiltered, currentUser]);
