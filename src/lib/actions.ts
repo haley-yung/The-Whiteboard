@@ -6,7 +6,7 @@ import { createServerSupabase } from "./supabase-server";
 import type { Phase, Site } from "./types";
 
 function assertSite(s: unknown): Site {
-  const allowed: Site[] = ["Brain", "Head & Neck", "Lung", "Abdomen", "Prostate", "Gynae", "Breast"];
+  const allowed: Site[] = ["Brain", "H&N", "Lung", "Abdomen", "Prostate", "Gynae", "Breast"];
   if (typeof s !== "string" || !allowed.includes(s as Site)) {
     throw new Error(`Invalid site: ${s}`);
   }

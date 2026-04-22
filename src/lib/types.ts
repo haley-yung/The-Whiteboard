@@ -2,7 +2,7 @@ export type Role = "RT" | "MO" | "Big MO";
 
 export const SITES = [
   "Brain",
-  "Head & Neck",
+  "H&N",
   "Lung",
   "Abdomen",
   "Prostate",
@@ -60,7 +60,7 @@ export type Rejection = {
 
 export const SITE_SHORT: Record<Site, string> = {
   Brain: "Brain",
-  "Head & Neck": "H&N",
+  "H&N": "H&N",
   Lung: "Lung",
   Abdomen: "Abd",
   Prostate: "Prostate",
