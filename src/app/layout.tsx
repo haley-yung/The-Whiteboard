@@ -37,7 +37,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <UserProvider users={users}>
           <div className="flex min-h-dvh flex-col">
             <TopBar />
-            <main className="flex-1 mx-auto w-full max-w-3xl">{children}</main>
+            <main className="flex-1 w-full">{children}</main>
           </div>
         </UserProvider>
       </body>

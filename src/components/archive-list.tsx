@@ -40,7 +40,7 @@ export function ArchiveList({ cases, users }: { cases: Case[]; users: User[] }) 
   }, [scoped, search]);
 
   return (
-    <div className="pb-12">
+    <div className="mx-auto w-full max-w-4xl pb-12">
       <div className="sticky top-[57px] z-10 flex items-center gap-3 border-b border-[color:var(--color-line)] bg-[color:var(--color-paper)] px-4 py-3">
         <Link href="/" aria-label="Back">
           <Icon name="back" size={18} />

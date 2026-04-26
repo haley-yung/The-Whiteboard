@@ -79,9 +79,10 @@ export function Board({ cases }: { cases: Case[] }) {
   const totalCount = siteFiltered.length;
 
   return (
-    <div className="relative pb-24">
+    <div className="relative pb-24 lg:pb-10">
       {/* Header area */}
-      <div className="bg-[color:var(--color-paper)] px-4 pb-2 pt-3">
+      <div className="bg-[color:var(--color-paper)] pb-2 pt-3">
+        <div className="mx-auto w-full max-w-[1400px] px-4">
         <div className="flex items-center justify-between">
           <div className="min-w-0">
             <div className="font-serif text-[18px] font-semibold tracking-tight">
@@ -130,10 +131,11 @@ export function Board({ cases }: { cases: Case[] }) {
             />
           ))}
         </div>
+        </div>
       </div>
 
       {/* Board body — desktop: horizontal columns (All); mobile: stacked groups */}
-      <div className="px-4">
+      <div className="mx-auto w-full max-w-[1400px] px-4">
         {phasesToRender.length === 0 ||
         phasesToRender.every((p) => p.list.length === 0) ? (
           <div className="mt-12 text-center text-[13px] text-[color:var(--color-muted)]">
@@ -142,7 +144,7 @@ export function Board({ cases }: { cases: Case[] }) {
         ) : activePhase === "all" ? (
           <>
             {/* Desktop horizontal columns */}
-            <div className="hidden lg:grid lg:grid-cols-4 lg:gap-4">
+            <div className="hidden lg:grid lg:grid-cols-4 lg:gap-5">
               {phasesToRender.map(({ phase, list }) => (
                 <div key={phase}>
                   <SectionHeader

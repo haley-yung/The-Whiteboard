@@ -21,7 +21,7 @@ export function TopBar() {
 
   return (
     <header className="sticky top-0 z-40 bg-[color:var(--color-paper)] border-b border-[color:var(--color-line)]">
-      <div className="mx-auto flex w-full max-w-3xl items-center gap-3 px-4 py-3">
+      <div className="mx-auto flex w-full max-w-[1400px] items-center gap-3 px-4 py-3">
         <Link href="/" className="flex items-center gap-2">
           <span className="inline-block h-2 w-2 rounded-full bg-[color:var(--color-ink)]" />
           <span className="font-serif text-[17px] font-semibold tracking-tight">
